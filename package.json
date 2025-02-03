@@ -4,6 +4,7 @@
   "description": "Nous allons tâcher de créer une API permettant d'effectuer des opérations CRUD sur les pokémons. Ce projet sera réalisé avec Express pour la gestion des routes et avec une base de donnée NoSQL.",
   "main": "build/index.js",
   "scripts": {
+    "db:seed": "prisma db seed",
     "dev": "nodemon --exec ts-node ./src/index.ts",
     "start": "node ./build/index.js",
     "type-check": "tsc --noEmit",
@@ -20,7 +21,7 @@
     "url": "git+https://github.com/vfourny/nodejs-pokedex-api.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "BEIGNON Arthur",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/vfourny/nodejs-pokedex-api/issues"
