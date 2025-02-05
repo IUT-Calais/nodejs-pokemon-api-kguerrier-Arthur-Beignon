@@ -1,12 +1,11 @@
 import express from 'express';
 import { Request, Response } from 'express';
 
-import { PokemonCardsRouteur, PokemonCardsRouteurID } from './pokemon_cards/pokemon_cards.routeur';
+import { PokemonCardsRouteur} from './pokemon_cards/pokemon_cards.routeur';
 
 
 export const app = express();
 const port = process.env.PORT || 3000;
-
 app.use(express.json());
 
 export const server = app.listen(port);
@@ -15,27 +14,4 @@ export function stopServer() {
   server.close();
 }
 
-// Liste de pokémon
 app.use('/pokemons-cards', PokemonCardsRouteur);
-
-// Un pokémon en spécifique
-app.use('/pokemons-cards/:id', PokemonCardsRouteurID);
-
-// Enregistrer un Pokémon
-app.post('/pokemons-cards', (req: Request, res: Response) => {
-  const pokemonData = req.body;
-  res.status(201).send(`Pokémon ajouté : ${JSON.stringify(pokemonData)}`);
-});
-
-// Modifier un Pokémon
-app.patch('/pokemons-cards/:pokemonCardId', (req: Request, res: Response) => {
-  const { pokemonCardId } = req.params;
-  const updatedData = req.body;
-  res.status(200).send(`Pokémon ${pokemonCardId} mis à jour avec : ${JSON.stringify(updatedData)}`);
-});
-
-// Supprimer un Pokémon
-app.delete('/pokemons-cards/:pokemonCardId', (req: Request, res: Response) => {
-  const { pokemonCardId } = req.params;
-  res.status(200).send(`Pokémon ${pokemonCardId} supprimé`);
-});
