@@ -1,7 +1,7 @@
 import express from 'express';
 import { Request, Response } from 'express';
 
-import { PokemonCardsRouteur } from './pokemon_cards/pokemon_cards.routeur';
+import { PokemonCardsRouteur, PokemonCardsRouteurID } from './pokemon_cards/pokemon_cards.routeur';
 
 
 export const app = express();
@@ -15,13 +15,11 @@ export function stopServer() {
   server.close();
 }
 
+// Liste de pokémon
 app.use('/pokemons-cards', PokemonCardsRouteur);
 
-// Obtenir un Pokémon spécifique
-app.get('/pokemons-cards/:pokemonCardId', (req: Request, res: Response) => {
-  const {pokemonCardId} = req.params;
-  res.status(200).send(`Détails du Pokémon avec l'ID : ${pokemonCardId}`);
-});
+// Un pokémon en spécifique
+app.use('/pokemons-cards/:id', PokemonCardsRouteurID);
 
 // Enregistrer un Pokémon
 app.post('/pokemons-cards', (req: Request, res: Response) => {
