@@ -3,7 +3,16 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  
+  // Suppression de tous les posts
   await prisma.type.deleteMany();
+  await prisma.pokemonCard.deleteMany();
+
+  // Réinitialisation de l'auto-incrémentation sur SQLite
+  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='User'`;
+  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Post'`;
+
+
   await prisma.type.createMany({
     data: [
       { name: 'Normal' },
@@ -27,7 +36,7 @@ async function main() {
     ],
   });
 
-  await prisma.pokemonCard.deleteMany();
+  
   await prisma.pokemonCard.createMany({
     data: [
       {

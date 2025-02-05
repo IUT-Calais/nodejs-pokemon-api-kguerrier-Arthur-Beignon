@@ -1,6 +1,8 @@
 import express from 'express';
 import { Request, Response } from 'express';
 
+import { PokemonCardsRouteur } from './pokemon_cards/pokemon_cards.routeur';
+
 
 export const app = express();
 const port = process.env.PORT || 3000;
@@ -13,14 +15,11 @@ export function stopServer() {
   server.close();
 }
 
-// Liste de tous les Pokémons
-app.get('/pokemons-cards', (_req: Request, res: Response) => {
-  res.status(200).send('Liste de tous les Pokémons');
-});
+app.use('/pokemons-cards', PokemonCardsRouteur);
 
 // Obtenir un Pokémon spécifique
 app.get('/pokemons-cards/:pokemonCardId', (req: Request, res: Response) => {
-  const { pokemonCardId } = req.params;
+  const {pokemonCardId} = req.params;
   res.status(200).send(`Détails du Pokémon avec l'ID : ${pokemonCardId}`);
 });
 
