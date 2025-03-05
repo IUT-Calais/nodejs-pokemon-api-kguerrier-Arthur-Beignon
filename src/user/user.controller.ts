@@ -14,13 +14,15 @@ export const postUsers = async (req: Request, res: Response) => {
 
         // Vérification des champs requis
         if (!email || !password) {
-            return res.status(400).send({ error: "Certains champs sont manquants !" });
+            res.status(400).send({ error: "Certains champs sont manquants !" });
+            return
         }
 
         // Vérifier si l'email est déjà utilisé
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
-            return res.status(400).send({ error: "L'email est déjà utilisé !" });
+            res.status(400).send({ error: "L'email est déjà utilisé !" });
+            return 
         }
 
         // Hachage du mot de passe
@@ -48,19 +50,22 @@ export const postUserLogin = async (req: Request, res: Response) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(400).json({ error: "Email et mot de passe requis" });
+            res.status(400).json({ error: "Email et mot de passe requis" });
+            return
         }
 
         // Vérifier si l'utilisateur existe
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
-            return res.status(404).json({ error: "Utilisateur non trouvé" });
+            res.status(404).json({ error: "Utilisateur non trouvé" });
+            return 
         }
 
         // Vérifier la correspondance du mot de passe
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(400).json({ error: "Mot de passe incorrect" });
+            res.status(400).json({ error: "Mot de passe incorrect" });
+            return 
         }
 
         // Génération du JWT
