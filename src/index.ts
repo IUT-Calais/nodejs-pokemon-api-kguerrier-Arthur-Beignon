@@ -2,6 +2,7 @@ import express from 'express';
 import { Request, Response } from 'express';
 
 import { PokemonCardsRouteur} from './pokemon_cards/pokemon_cards.routeur';
+import { UserRouteur } from './user/user.routeur';
 
 
 export const app = express();
@@ -15,3 +16,4 @@ export function stopServer() {
 }
 
 app.use('/pokemons-cards', PokemonCardsRouteur);
+app.use('/users', UserRouteur);

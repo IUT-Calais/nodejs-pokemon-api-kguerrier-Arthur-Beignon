@@ -7,6 +7,7 @@ async function main() {
   // Suppression de tous les posts
   await prisma.type.deleteMany();
   await prisma.pokemonCard.deleteMany();
+  await prisma.user.deleteMany();
 
   // Réinitialisation de l'auto-incrémentation sur SQLite
   await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='User'`;
@@ -36,7 +37,19 @@ async function main() {
     ],
   });
 
-  
+  await prisma.user.createMany({
+    data : [
+      {
+        "email" : "admin@gmail.com",
+        "password" : "admin"
+      },
+      {
+        "email" : "user@gmail.com",
+        "password" : "user"
+      }
+    ]
+  })
+
   await prisma.pokemonCard.createMany({
     data: [
       {
