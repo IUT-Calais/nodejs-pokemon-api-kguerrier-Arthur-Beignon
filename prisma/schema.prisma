@@ -20,7 +20,7 @@ model PokemonCard {
   name       String  @unique
   pokedexId  Int     @unique 
   typeId     Int     
-  type       Type    @relation(fields: [typeId], references: [id]) 
+  type       Type    @relation(fields: [typeId], references: [id], onDelete: Cascade) 
   lifePoints Int     
   size       Float?  
   weight     Float?  

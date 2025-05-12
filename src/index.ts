@@ -1,19 +1,25 @@
 import express from 'express';
-import { Request, Response } from 'express';
-
-import { PokemonCardsRouteur} from './pokemon_cards/pokemon_cards.routeur';
+import { PokemonCardsRouteur } from './pokemon_cards/pokemon_cards.routeur';
 import { UserRouteur } from './user/user.routeur';
 
-
 export const app = express();
-const port = process.env.PORT || 3000;
 app.use(express.json());
 
-export const server = app.listen(port);
+app.use('/pokemon-cards', PokemonCardsRouteur); 
+app.use('/users', UserRouteur);
 
-export function stopServer() {
-  server.close();
+const port = process.env.PORT || 3000;
+
+let server: any;
+
+if (process.env.NODE_ENV !== 'test') {
+  server = app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
 }
 
-app.use('/pokemons-cards', PokemonCardsRouteur);
-app.use('/users', UserRouteur);
+export { server };
+
+export function stopServer() {
+  if (server) server.close();
+}

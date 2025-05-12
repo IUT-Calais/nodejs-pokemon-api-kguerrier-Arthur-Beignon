@@ -51,32 +51,32 @@ export const postUserLogin = async (req: Request, res: Response) => {
 
         if (!email || !password) {
             res.status(400).json({ error: "Email et mot de passe requis" });
-            return
+            return;
         }
 
         // Vérifier si l'utilisateur existe
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
             res.status(404).json({ error: "Utilisateur non trouvé" });
-            return 
+            return;
         }
 
         // Vérifier la correspondance du mot de passe
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             res.status(400).json({ error: "Mot de passe incorrect" });
-            return 
+            return;
         }
 
-        // Génération du JWT
+        // Générer le JWT si tout est bon
         const token = jwt.sign(
             { id: user.id, email: user.email },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRATION }
         );
 
-        res.status(201).json({ message: "Connexion réussie", token });
-
+        // Utilisez maintenant le statut 200 au lieu de 201
+        res.status(200).json({ message: "Connexion réussie", token });
     } catch (error) {
         console.error("Erreur lors de la connexion :", error);
         res.status(500).json({ error: "Erreur serveur" });
