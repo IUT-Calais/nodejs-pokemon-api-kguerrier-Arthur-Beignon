@@ -1,0 +1,266 @@
+openapi: 3.0.0
+info:
+  title: Pokémon Card API
+  description: API permettant de gérer les cartes de Pokémon
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Serveur local
+
+tags:
+  - name: PokemonCards
+    description: Gestion des cartes Pokémon
+  - name: Auth
+    description: Authentification des utilisateurs
+
+paths:
+  /pokemon-cards:
+    get:
+      summary: Récupère toutes les cartes Pokémon
+      tags:
+        - PokemonCards
+      responses:
+        '200':
+          description: Liste des cartes Pokémon
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PokemonCard'
+
+    post:
+      summary: Crée une nouvelle carte Pokémon
+      tags:
+        - PokemonCards
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Données de la carte Pokémon à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PokemonCardCreate'
+      responses:
+        '201':
+          description: Carte Pokémon créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PokemonCard'
+        '401':
+          description: Non autorisé - JWT manquant ou invalide
+
+  /pokemon-cards/{pokemonCardId}:
+    get:
+      summary: Récupère une carte Pokémon par son ID
+      tags:
+        - PokemonCards
+      parameters:
+        - name: pokemonCardId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détails de la carte Pokémon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PokemonCard'
+        '404':
+          description: Carte Pokémon non trouvée
+
+    patch:
+      summary: Met à jour une carte Pokémon
+      tags:
+        - PokemonCards
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pokemonCardId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Données de mise à jour de la carte Pokémon
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PokemonCardUpdate'
+      responses:
+        '200':
+          description: Carte Pokémon mise à jour
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Pokémon modifié"
+                  pokemon:
+                    $ref: '#/components/schemas/PokemonCard'
+        '401':
+          description: Non autorisé - JWT manquant ou invalide
+        '404':
+          description: Carte Pokémon non trouvée
+
+    delete:
+      summary: Supprime une carte Pokémon
+      tags:
+        - PokemonCards
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pokemonCardId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Carte Pokémon supprimée
+        '401':
+          description: Non autorisé - JWT manquant ou invalide
+        '404':
+          description: Carte Pokémon non trouvée
+
+  /auth/register:
+    post:
+      summary: Inscription d'un utilisateur
+      tags:
+        - Auth
+      requestBody:
+        description: Données pour inscrire un nouvel utilisateur
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+        '400':
+          description: Erreur dans la requête
+
+  /auth/login:
+    post:
+      summary: Connexion et obtention d'un JWT
+      tags:
+        - Auth
+      requestBody:
+        description: Identifiants de connexion
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Identifiants incorrects
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    PokemonCard:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        pokedexId:
+          type: integer
+        typeId:
+          type: integer
+        lifePoints:
+          type: integer
+        size:
+          type: number
+        weight:
+          type: number
+        imageUrl:
+          type: string
+
+    PokemonCardCreate:
+      type: object
+      required:
+        - name
+        - pokedexId
+        - typeId
+        - lifePoints
+      properties:
+        name:
+          type: string
+        pokedexId:
+          type: integer
+        typeId:
+          type: integer
+        lifePoints:
+          type: integer
+        size:
+          type: number
+        weight:
+          type: number
+        imageUrl:
+          type: string
+
+    PokemonCardUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        pokedexId:
+          type: integer
+        lifePoints:
+          type: integer
+        size:
+          type: number
+        weight:
+          type: number
+        imageUrl:
+          type: string
+
+    UserRegister:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    UserLogin:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
